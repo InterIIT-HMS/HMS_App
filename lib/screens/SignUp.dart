@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_auth0/flutter_auth0.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -7,13 +5,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hospital_management_system/constants/colors.dart';
 import 'package:hospital_management_system/constants/images.dart';
-import 'package:http/http.dart' as http;
 import 'package:hospital_management_system/screens/LoginPage.dart';
-import 'package:hospital_management_system/services/NetworkHelper.dart';
 import 'package:hospital_management_system/widgets/MyButton.dart';
 import 'package:hospital_management_system/widgets/MyTextField.dart';
 
 class SignUp extends StatefulWidget {
+  String choice;
+  SignUp({this.choice});
   @override
   _SignUpState createState() => _SignUpState();
 }
@@ -84,6 +82,7 @@ class _SignUpState extends State<SignUp> {
   @override
   void initState() {
     super.initState();
+    _roleController.text = widget.choice;
     auth = Auth0(baseUrl: 'https://$AUTH0_DOMAIN/', clientId: AUTH0_CLIENT_ID);
     _roleController.text = 'None';
   }
@@ -185,13 +184,15 @@ class _SignUpState extends State<SignUp> {
                           ),
                           MyTextField(
                             controller: _uidController,
-                            hint: "Health ID or Registration number",
+                            hint: widget.choice == 'Hospital' ||
+                                    widget.choice == 'Doctor'
+                                ? "Registration number"
+                                : "Health ID",
                             icon: FlutterIcons.account_card_details_mco,
                             validation: (val) {
                               if (val.isEmpty) {
                                 return "Name is required";
                               }
-                              return null;
                             },
                           ),
 
@@ -234,10 +235,13 @@ class _SignUpState extends State<SignUp> {
                           // address
                           MyTextField(
                             controller: _addressController,
-                            hint: "Address",
+                            hint:
+                                widget.choice != "Patient" ? "Address" : "Age",
                             isMultiline: true,
-                            maxLines: 3,
-                            icon: FlutterIcons.location_city_mdi,
+                            maxLines: widget.choice != "Patient" ? 3 : 1,
+                            icon: widget.choice != "Patient"
+                                ? FlutterIcons.location_city_mdi
+                                : Icons.person,
                             validation: (val) {
                               if (val.isEmpty) {
                                 return "Address is required";
@@ -260,31 +264,7 @@ class _SignUpState extends State<SignUp> {
                               return null;
                             },
                           ),
-                          Container(
-                            padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
-                            width: double.infinity,
-                            child: DropdownButton<String>(
-                                hint: Text('Choose'),
-                                onChanged: (String changedValue) {
-                                  _roleController.text = changedValue;
-                                  setState(() {
-                                    _roleController.text;
-                                    print(_roleController.text);
-                                  });
-                                },
-                                value: _roleController.text,
-                                items: <String>[
-                                  'None',
-                                  'hospital',
-                                  'patient',
-                                  'doctor'
-                                ].map((String value) {
-                                  return new DropdownMenuItem<String>(
-                                    value: value,
-                                    child: new Text(value),
-                                  );
-                                }).toList()),
-                          ),
+
                           // login button
                           !isBusy
                               ? GestureDetector(

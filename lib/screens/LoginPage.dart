@@ -6,6 +6,7 @@ import 'package:hospital_management_system/constants/images.dart';
 import 'package:hospital_management_system/screens/Dashboard.dart';
 
 import 'package:hospital_management_system/screens/SignUp.dart';
+import 'package:hospital_management_system/screens/choiceSign.dart';
 
 import 'package:hospital_management_system/widgets/MyButton.dart';
 import 'package:hospital_management_system/widgets/MyTextField.dart';
@@ -198,7 +199,7 @@ class _LoginPageState extends State<LoginPage> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (BuildContext context) =>
-                                              SignUp()));
+                                              ChooseSign()));
                                 },
                                 child: Text(
                                   'Sign up',
