@@ -140,33 +140,6 @@ class _PrescriptionsState extends State<Prescriptions> {
                                                   ),
                                                 ]),
                                           ),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 2, horizontal: 5),
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: _prescriptions[index][
-                                                            'prescription_status'] ==
-                                                        'PENDING'
-                                                    ? Colors.orange
-                                                    : _prescriptions[index][
-                                                                'prescription_status'] ==
-                                                            'SHIPPED'
-                                                        ? Colors.green
-                                                        : _prescriptions[index][
-                                                                    'prescription_status'] ==
-                                                                'RECEIVED'
-                                                            ? Colors.blue[700]
-                                                            : Colors.grey[600]),
-                                            child: Text(
-                                              _prescriptions[index]
-                                                  ['prescription_status'],
-                                              style: TextStyle(
-                                                  color: colorWhite,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                          ),
                                         ],
                                       ),
                                       SizedBox(height: 5),
@@ -204,76 +177,6 @@ class _PrescriptionsState extends State<Prescriptions> {
                                           maxLines: 3,
                                           textAlign: TextAlign.justify,
                                         ),
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Expanded(
-                                            child: DropdownButton<String>(
-                                              isDense: true,
-                                              isExpanded: true,
-                                              icon: Icon(Icons.more_horiz),
-                                              underline: Container(
-                                                height: 0,
-                                                color: Colors.deepPurpleAccent,
-                                              ),
-                                              onChanged: (String newValue) {
-                                                setState(() {
-                                                  dropdownValue = newValue;
-                                                });
-                                              },
-                                              items: <String>[
-                                                'Mark as Received',
-                                              ].map<DropdownMenuItem<String>>(
-                                                  (String value) {
-                                                return DropdownMenuItem<String>(
-                                                  value: value,
-                                                  child: Text(value),
-                                                  onTap: () {
-                                                    print(value);
-                                                    print(
-                                                        _prescriptions[index]);
-
-                                                    _markAsReceived(_prescriptions[
-                                                                index]
-                                                            ['prescription_id'])
-                                                        .then((value) {
-                                                      var res = jsonDecode(
-                                                          value.body);
-
-                                                      if (res['error'] ==
-                                                          true) {
-                                                        Fluttertoast.showToast(
-                                                            msg: res['message'],
-                                                            backgroundColor:
-                                                                Colors.red[600],
-                                                            textColor:
-                                                                colorWhite,
-                                                            toastLength: Toast
-                                                                .LENGTH_LONG);
-                                                      } else {
-                                                        Fluttertoast.showToast(
-                                                                msg: res[
-                                                                    'message'],
-                                                                backgroundColor:
-                                                                    Colors
-                                                                        .green,
-                                                                textColor:
-                                                                    colorWhite,
-                                                                toastLength: Toast
-                                                                    .LENGTH_LONG)
-                                                            .then((value) {
-                                                          // _getPrescriptions();
-                                                        });
-                                                      }
-                                                    });
-                                                  },
-                                                );
-                                              }).toList(),
-                                            ),
-                                          ),
-                                        ],
                                       ),
                                     ],
                                   ),

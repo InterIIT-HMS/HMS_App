@@ -265,7 +265,6 @@ class _AppointmentsState extends State<Appointments> {
                                               items: <String>[
                                                 'View',
                                                 'Update',
-                                                'Cancel'
                                               ].map<DropdownMenuItem<String>>(
                                                   (String value) {
                                                 return DropdownMenuItem<String>(
