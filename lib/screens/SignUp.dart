@@ -105,7 +105,7 @@ class _SignUpState extends State<SignUp> {
         'connection': 'Username-Password-Authentication',
         'given_name': role,
         'family_name': uid.toString(),
-        'nickname': address,
+        'nickname': '1',
         'name': name,
       });
       setState(() {

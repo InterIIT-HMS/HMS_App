@@ -2,14 +2,17 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:hospital_management_system/constants/colors.dart';
+import 'package:hospital_management_system/screens/choiceSign.dart';
+import 'package:hospital_management_system/widgets/MyTextField.dart';
 import 'package:http/http.dart' as http;
 import 'package:hospital_management_system/services/NetworkHelper.dart';
 
 class LabReports extends StatefulWidget {
   final String userId;
-
-  LabReports({this.userId});
+  final dynamic userInfo;
+  LabReports({this.userId, this.userInfo});
 
   @override
   _LabReportsState createState() => _LabReportsState();
@@ -50,31 +53,6 @@ class _LabReportsState extends State<LabReports> {
     super.initState();
   }
 
-// get the completed lab test list
-  // Future<http.Response> _getLabTests() async {
-  //   setState(() {
-  //     _loading = true;
-  //   });
-
-  //   final http.Response response = await Network().postData(
-  //       {'user_id': widget.userId, 'list_type': 'completed_lab_tests'},
-  //       '/getLists.php');
-
-  //   print('response ---- ${jsonDecode(response.body)}');
-
-  //   setState(() {
-  //     _loading = false;
-  //     var res = jsonDecode(response.body);
-  //     setState(() {
-  //       _completedLabTests = res['completedLabTestList'];
-  //     });
-  //   });
-
-  //   print(_completedLabTests);
-
-  //   return response;
-  // }
-
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
@@ -82,6 +60,17 @@ class _LabReportsState extends State<LabReports> {
 
     return Scaffold(
       backgroundColor: backgroundColor,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Visibility(
+        visible: widget.userInfo['given_name'] == ChooseSign.doctor,
+        child: FloatingActionButton.extended(
+          label: Text('Add Report'),
+          onPressed: () {
+            _addNewReportsDialog(context);
+          },
+          icon: Icon(FlutterIcons.exit_run_mco),
+        ),
+      ),
       appBar: AppBar(
         backgroundColor: primaryColor,
         title: Text('Lab Reports'),
@@ -145,7 +134,6 @@ class _LabReportsState extends State<LabReports> {
                                                   ),
                                                 ]),
                                           ),
-                                          
                                         ],
                                       ),
                                       SizedBox(height: 5),
@@ -229,6 +217,115 @@ class _LabReportsState extends State<LabReports> {
                     ),
             ),
     );
+  }
+
+  TextEditingController _descriptionController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+
+  GlobalKey<FormState> _formKey = GlobalKey();
+  // adding new appointment dialog
+  Future<Widget> _addNewReportsDialog(context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            backgroundColor: Colors.transparent,
+            child: Container(
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              width: double.infinity,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: primaryColor,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(16.0),
+                        topRight: Radius.circular(16.0),
+                      ),
+                    ),
+                    height: 70,
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                    child: Text('New Reports',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                            color: colorWhite),
+                        textAlign: TextAlign.center),
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          MyTextField(
+                            hint: 'Email of Patient',
+                            icon: MaterialCommunityIcons.note_text,
+                            isMultiline: true,
+                            maxLines: 1,
+                            controller: _emailController,
+                            validation: (val) {
+                              if (val.isEmpty) {
+                                return 'An Email is required';
+                              }
+                              return null;
+                            },
+                          ),
+                          MyTextField(
+                            hint: 'Link To Report',
+                            icon: MaterialCommunityIcons.note_text,
+                            isMultiline: true,
+                            maxLines: 1,
+                            controller: _descriptionController,
+                            validation: (val) {
+                              if (val.isEmpty) {
+                                return 'A description is required';
+                              }
+                              return null;
+                            },
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              if (_formKey.currentState.validate()) {
+                                // prescription post
+                              }
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 30.0,
+                              width: double.infinity,
+                              child: Text(
+                                'SAVE',
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 }
 

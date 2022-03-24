@@ -42,6 +42,9 @@ class _AppointmentsState extends State<Appointments> {
     {"full_name": 'kosaka'},
     {"full_name": 'samoka'}
   ];
+
+  TimeOfDay selectedTime = TimeOfDay.now();
+
   double width;
   double height;
   var _selectedDocotor;
@@ -246,115 +249,56 @@ class _AppointmentsState extends State<Appointments> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.end,
                                         children: [
-                                          Expanded(
-                                            child: DropdownButton<String>(
-                                              isDense: true,
-                                              isExpanded: true,
-                                              icon: Icon(
-                                                Icons.more_horiz,
-                                              ),
-                                              underline: Container(
-                                                height: 0,
-                                                color: Colors.deepPurpleAccent,
-                                              ),
-                                              onChanged: (String newValue) {
-                                                setState(() {
-                                                  dropdownValue = newValue;
-                                                });
-                                              },
-                                              items: <String>[
-                                                'View',
-                                              ].map<DropdownMenuItem<String>>(
-                                                  (String value) {
-                                                return DropdownMenuItem<String>(
-                                                  value: value,
-                                                  child: Text(value),
-                                                  onTap: () {
-                                                    print(value);
-                                                    print(_appointments[index]);
-
-                                                    if (value == 'View') {
-                                                      _viewAppointmentDialog(
-                                                          context,
+                                          if (widget.userInfo['given_name'] ==
+                                                  ChooseSign.doctor &&
+                                              _appointments[index]
+                                                      ['appointment_status'] ==
+                                                  'pending')
+                                            Expanded(
+                                              child: DropdownButton<String>(
+                                                isDense: true,
+                                                isExpanded: true,
+                                                icon: Icon(
+                                                  Icons.more_horiz,
+                                                ),
+                                                underline: Container(
+                                                  height: 0,
+                                                  color:
+                                                      Colors.deepPurpleAccent,
+                                                ),
+                                                onChanged: (String newValue) {
+                                                  setState(() {
+                                                    dropdownValue = newValue;
+                                                  });
+                                                },
+                                                items: <String>[
+                                                  'View',
+                                                  'Approve',
+                                                ].map<DropdownMenuItem<String>>(
+                                                    (String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                    onTap: () {
+                                                      print(value);
+                                                      print(
                                                           _appointments[index]);
-                                                    } else if (value ==
-                                                            'Cancel' ||
-                                                        value == 'Update') {
-                                                      if (_appointments[index][
-                                                                  'appointment_status'] ==
-                                                              'CANCELLED' ||
-                                                          _appointments[index][
-                                                                  'appointment_status'] ==
-                                                              'REJECTED' ||
-                                                          _appointments[index][
-                                                                  'appointment_status'] ==
-                                                              'COMPLETED') {
-                                                        Fluttertoast.showToast(
-                                                            msg:
-                                                                'This appointment has already been ${_appointments[index]['appointment_status']}!',
-                                                            backgroundColor:
-                                                                Colors.red[600],
-                                                            textColor:
-                                                                colorWhite,
-                                                            toastLength: Toast
-                                                                .LENGTH_LONG);
-                                                      } else {
-                                                        if (value == 'Cancel') {
-                                                          _cancelAppointment(
-                                                                  _appointments[
-                                                                          index]
-                                                                      [
-                                                                      'appointment_id'])
-                                                              .then((value) {
-                                                            var res =
-                                                                jsonDecode(
-                                                                    value.body);
 
-                                                            if (res['error'] ==
-                                                                true) {
-                                                              Fluttertoast.showToast(
-                                                                  msg: res[
-                                                                      'message'],
-                                                                  backgroundColor:
-                                                                      Colors.red[
-                                                                          600],
-                                                                  textColor:
-                                                                      Colors
-                                                                          .white,
-                                                                  toastLength: Toast
-                                                                      .LENGTH_LONG);
-                                                            } else {
-                                                              Fluttertoast.showToast(
-                                                                      msg: res[
-                                                                          'message'],
-                                                                      backgroundColor:
-                                                                          Colors
-                                                                              .green,
-                                                                      textColor:
-                                                                          Colors
-                                                                              .white,
-                                                                      toastLength:
-                                                                          Toast
-                                                                              .LENGTH_LONG)
-                                                                  .then(
-                                                                      (value) {});
-                                                            }
-                                                          });
-                                                        } else if (value ==
-                                                            'Update') {
-                                                          _updateAppointmentDialog(
-                                                              context,
-                                                              _appointments[
-                                                                      index][
-                                                                  'appointment_id']);
-                                                        }
+                                                      if (value == 'View') {
+                                                        _viewAppointmentDialog(
+                                                            context,
+                                                            _appointments[
+                                                                index]);
+                                                      } else if (value ==
+                                                          'Approve') {
+                                                        _approveTime_2(context);
                                                       }
-                                                    }
-                                                  },
-                                                );
-                                              }).toList(),
+                                                    },
+                                                  );
+                                                }).toList(),
+                                              ),
                                             ),
-                                          ),
                                         ],
                                       ),
                                     ],
@@ -369,6 +313,79 @@ class _AppointmentsState extends State<Appointments> {
                     ),
             ),
     );
+  }
+
+  void _selectTime(BuildContext context) async {
+    final TimeOfDay timeOfDay = await showTimePicker(
+      context: context,
+      initialTime: selectedTime,
+      initialEntryMode: TimePickerEntryMode.dial,
+    );
+    if (timeOfDay != null && timeOfDay != selectedTime) {
+      setState(() {
+        selectedTime = timeOfDay;
+        Navigator.pop(context);
+      });
+    }
+  }
+
+  // view appointment details dialog
+  Future<Widget> _approveTime_2(context) async {
+    await Future.delayed(Duration(milliseconds: 100));
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            backgroundColor: Colors.transparent,
+            child: Container(
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              width: double.infinity,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: primaryColor,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(16.0),
+                        topRight: Radius.circular(16.0),
+                      ),
+                    ),
+                    height: 50,
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                    child: Text('Select Time Slot',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                            color: colorWhite),
+                        textAlign: TextAlign.center),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      _selectTime(context);
+                    },
+                    child: Text(
+                      "${selectedTime.hour}:${selectedTime.minute}",
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 
 // adding new appointment dialog
@@ -498,122 +515,6 @@ class _AppointmentsState extends State<Appointments> {
                             onTap: () {
                               if (_formKey.currentState.validate()) {
                                 _appointments.add(_appointments[0]);
-                              }
-                            },
-                            child: Container(
-                              alignment: Alignment.center,
-                              height: 30.0,
-                              width: double.infinity,
-                              child: Text(
-                                'SAVE',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
-  // update appointments dialog
-  Future<Widget> _updateAppointmentDialog(context, appointmentId) async {
-    await Future.delayed(Duration(milliseconds: 100));
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            backgroundColor: Colors.transparent,
-            child: Container(
-              decoration: BoxDecoration(
-                color: backgroundColor,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              width: double.infinity,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: primaryColor,
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16.0),
-                        topRight: Radius.circular(16.0),
-                      ),
-                    ),
-                    height: 70,
-                    width: double.infinity,
-                    alignment: Alignment.center,
-                    child: Text('Update Appointment Details',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 18,
-                            color: colorWhite),
-                        textAlign: TextAlign.center),
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          MyTextField(
-                            hint: 'Description',
-                            icon: MaterialCommunityIcons.note_text,
-                            isMultiline: true,
-                            maxLines: 5,
-                            controller: _descriptionController,
-                            validation: (val) {
-                              if (val.isEmpty) {
-                                return 'The description is required';
-                              }
-                              return null;
-                            },
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              if (_formKey.currentState.validate()) {
-                                _updateAppointment(appointmentId).then((value) {
-                                  var res = jsonDecode(value.body);
-
-                                  if (res['error'] == true) {
-                                    Fluttertoast.showToast(
-                                        msg: res['message'],
-                                        backgroundColor: Colors.red[600],
-                                        textColor: colorWhite,
-                                        toastLength: Toast.LENGTH_LONG);
-                                  } else {
-                                    setState(() {
-                                      _descriptionController.clear();
-                                    });
-                                    Fluttertoast.showToast(
-                                            msg: res['message'],
-                                            backgroundColor: Colors.green,
-                                            textColor: colorWhite,
-                                            toastLength: Toast.LENGTH_LONG)
-                                        .then((value) {
-                                      Navigator.pop(context);
-                                      // _getAppointments();
-                                    });
-                                  }
-                                });
                               }
                             },
                             child: Container(
