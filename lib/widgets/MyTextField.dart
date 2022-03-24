@@ -56,7 +56,7 @@ class _MyTextFieldState extends State<MyTextField> {
                     : TextInputType.text)),
         decoration: InputDecoration(
           filled: true,
-          fillColor: fillColor,
+          fillColor: colorWhite,
           labelText: widget.hint,
           suffixIcon: widget.isSecure
               ? GestureDetector(

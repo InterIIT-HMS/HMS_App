@@ -10,10 +10,10 @@ import 'package:hospital_management_system/screens/Prescriptions.dart';
 import 'package:hospital_management_system/screens/choiceSign.dart';
 
 class DashboardTiles extends StatefulWidget {
-  final String username;
+  final String user_token;
   final String userId;
   final dynamic userInfo;
-  const DashboardTiles({Key key, this.username, this.userId, this.userInfo})
+  const DashboardTiles({Key key, this.user_token, this.userId, this.userInfo})
       : super(key: key);
 
   @override
@@ -48,7 +48,7 @@ class _DashboardTilesState extends State<DashboardTiles> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Welcome ${widget.username},',
+                'Welcome ${widget.userInfo['name']},',
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
@@ -84,6 +84,7 @@ class _DashboardTilesState extends State<DashboardTiles> {
                         context,
                         MaterialPageRoute(
                             builder: (_) => Appointments(
+                                userToken: widget.user_token,
                                 userId: widget.userId,
                                 userInfo: widget.userInfo)));
                   },
@@ -114,7 +115,10 @@ class _DashboardTilesState extends State<DashboardTiles> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (_) => LabReports(userId: widget.userId,userInfo: widget.userInfo,)));
+                            builder: (_) => LabReports(
+                                  userId: widget.userId,
+                                  userInfo: widget.userInfo,
+                                )));
                   },
                   child: Card(
                     margin: const EdgeInsets.all(10),

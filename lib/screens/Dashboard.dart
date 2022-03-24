@@ -101,7 +101,7 @@ class _DashboardState extends State<Dashboard> {
       case Page.dashboard:
         return content
             ? DashboardTiles(
-                username: parsedJson['name'],
+                user_token: widget.user_token,
                 userId: parsedJson['email'],
                 userInfo: parsedJson,
               )
