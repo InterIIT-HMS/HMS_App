@@ -84,7 +84,6 @@ class _SignUpState extends State<SignUp> {
     super.initState();
     _roleController.text = widget.choice;
     auth = Auth0(baseUrl: 'https://$AUTH0_DOMAIN/', clientId: AUTH0_CLIENT_ID);
-    _roleController.text = 'None';
   }
 
   signup(
@@ -107,6 +106,7 @@ class _SignUpState extends State<SignUp> {
         'given_name': role,
         'family_name': uid.toString(),
         'nickname': address,
+        'name': name,
       });
       setState(() {
         isBusy = false;

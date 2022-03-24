@@ -78,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
         context,
         MaterialPageRoute(
           builder: (BuildContext context) => Dashboard(
-            name: data['access_token'].toString(),
+            user_token: data['access_token'].toString(),
             id_token: data['id_token'].toString(),
           ),
         ),

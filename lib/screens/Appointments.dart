@@ -4,14 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hospital_management_system/constants/colors.dart';
+import 'package:hospital_management_system/screens/choiceSign.dart';
 import 'package:http/http.dart' as http;
 import 'package:hospital_management_system/services/NetworkHelper.dart';
 import 'package:hospital_management_system/widgets/MyTextField.dart';
 
 class Appointments extends StatefulWidget {
   final String userId;
-
-  Appointments({this.userId});
+  final dynamic userInfo;
+  Appointments({this.userId, this.userInfo});
 
   @override
   _AppointmentsState createState() => _AppointmentsState();
@@ -116,12 +117,17 @@ class _AppointmentsState extends State<Appointments> {
         backgroundColor: primaryColor,
         title: Text('Appointments'),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        label: Text('New Appointment'),
-        onPressed: () {
-          _addNewAppointmentDialog(context);
-        },
-        icon: Icon(FlutterIcons.calendar_plus_mco),
+      floatingActionButton: Visibility(
+        visible: widget.userInfo['given_name'] == ChooseSign.patient,
+        child: FloatingActionButton.extended(
+          label: widget.userInfo['given_name'] == ChooseSign.patient
+              ? Text('Request Appointment')
+              : Text('Pending Appointments'),
+          onPressed: () {
+            _addNewAppointmentDialog(context);
+          },
+          icon: Icon(FlutterIcons.calendar_plus_mco),
+        ),
       ),
       body: _loading
           ? Center(child: CircularProgressIndicator())

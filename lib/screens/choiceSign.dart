@@ -44,6 +44,9 @@ import 'package:hospital_management_system/screens/SignUp.dart';
 import 'package:hospital_management_system/widgets/MyButton.dart';
 
 class ChooseSign extends StatefulWidget {
+  static const String hospital = 'Hospital';
+  static const String doctor = 'Doctor';
+  static const String patient = 'Patient';
   @override
   _ChooseSignState createState() => _ChooseSignState();
 }
@@ -92,7 +95,7 @@ class _ChooseSignState extends State<ChooseSign> {
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
     final Map<String, IconData> _data = Map.fromIterables(
-        ['SELECT AN OPTION', 'Hospital', 'Patient', 'Doctor'],
+        ['SELECT AN OPTION', ChooseSign.hospital, ChooseSign.patient, ChooseSign.doctor],
         [Icons.filter_1, Icons.filter_2, Icons.filter_3, Icons.filter_4]);
     String _selectedType;
     IconData _selectedIcon;

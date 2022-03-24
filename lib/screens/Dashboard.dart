@@ -9,10 +9,10 @@ import 'package:http/http.dart' as http;
 enum Page { dashboard, manage }
 
 class Dashboard extends StatefulWidget {
-  final String name;
+  final String user_token;
   final String id_token;
 
-  Dashboard({this.name, this.id_token});
+  Dashboard({this.user_token, this.id_token});
   @override
   _DashboardState createState() => _DashboardState();
 }
@@ -33,6 +33,9 @@ class _DashboardState extends State<Dashboard> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    print('here');
+    print(widget.user_token);
+    print(widget.id_token);
     client = Auth0Client(
       clientId: AUTH0_CLIENT_ID,
       clientSecret:
@@ -42,7 +45,7 @@ class _DashboardState extends State<Dashboard> {
       sendTimeout: 10000,
       receiveTimeout: 60000,
       useLoggerInterceptor: true,
-      accessToken: widget.name,
+      accessToken: widget.user_token,
     );
     getInfo();
   }
@@ -52,9 +55,9 @@ class _DashboardState extends State<Dashboard> {
         await http.get('https://dev-rgmfg73e.us.auth0.com/userinfo', headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': 'Bearer ${widget.name}',
+      'Authorization': 'Bearer ${widget.user_token}',
     });
-    print('Token :${widget.name}');
+    print('Token :${widget.user_token}');
     print(response.body);
     parsedJson = jsonDecode(response.body);
     print(parsedJson);
@@ -81,7 +84,10 @@ class _DashboardState extends State<Dashboard> {
       case Page.dashboard:
         return content
             ? DashboardTiles(
-                username: parsedJson['name'], userId: parsedJson['email'])
+                username: parsedJson['name'],
+                userId: parsedJson['email'],
+                userInfo: parsedJson,
+              )
             : Center(child: CircularProgressIndicator());
         break;
       case Page.manage:
