@@ -145,35 +145,7 @@ class _LabReportsState extends State<LabReports> {
                                                   ),
                                                 ]),
                                           ),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 2, horizontal: 5),
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: _completedLabTests[index]
-                                                            ['test_status'] ==
-                                                        'ACCEPTED'
-                                                    ? Colors.green
-                                                    : _completedLabTests[index][
-                                                                'test_status'] ==
-                                                            'PAID'
-                                                        ? Colors.blue[700]
-                                                        : _completedLabTests[
-                                                                        index][
-                                                                    'test_status'] ==
-                                                                'COMPLETED'
-                                                            ? Colors.grey[600]
-                                                            : Colors.redAccent[
-                                                                100]),
-                                            child: Text(
-                                              _completedLabTests[index]
-                                                  ['test_status'],
-                                              style: TextStyle(
-                                                  color: colorWhite,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                          )
+                                          
                                         ],
                                       ),
                                       SizedBox(height: 5),
