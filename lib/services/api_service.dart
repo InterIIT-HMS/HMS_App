@@ -11,9 +11,9 @@ class APIService {
 
   APIService._internal();
   static final APIService _api = APIService._internal();
-  String _baseUrl = 'http://10.61.71.54:8080';
-  String _baseUrlAppointment = 'http://10.61.71.54:8081';
-  String _baseUrlReports = 'http://10.61.71.54:8082';
+  String _baseUrl = 'http://hms.sdslabs.co';
+  String _baseUrlAppointment = 'http://hms-appointment.sdslabs.co';
+  String _baseUrlReports = 'http://hms-report.sdslabs.co';
 
   Future<Map<String, dynamic>> createUser(String name, String contact) async {
     print('Start');
