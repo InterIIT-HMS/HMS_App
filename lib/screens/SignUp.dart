@@ -6,6 +6,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hospital_management_system/constants/colors.dart';
 import 'package:hospital_management_system/constants/images.dart';
 import 'package:hospital_management_system/screens/LoginPage.dart';
+import 'package:hospital_management_system/screens/choiceSign.dart';
+import 'package:hospital_management_system/services/api_service.dart';
 import 'package:hospital_management_system/widgets/MyButton.dart';
 import 'package:hospital_management_system/widgets/MyTextField.dart';
 
@@ -86,15 +88,38 @@ class _SignUpState extends State<SignUp> {
     auth = Auth0(baseUrl: 'https://$AUTH0_DOMAIN/', clientId: AUTH0_CLIENT_ID);
   }
 
-  signup(
-      {String email,
-      String password,
-      String role,
-      String name,
-      String contact,
-      String address,
-      String uid}) async {
+  final APIService apiService = APIService();
+  signup({
+    String email,
+    String password,
+    String role,
+    String name,
+    String contact,
+    String address,
+    String uid,
+  }) async {
+    Map<String, dynamic> mp;
+    if (widget.choice == ChooseSign.doctor) {
+      mp = await apiService.createUser(name, contact);
+    }
+    if (widget.choice == ChooseSign.patient) {
+      mp = await apiService.createPatient(name, contact);
+    }
+    if (widget.choice == ChooseSign.hospital) {
+      mp = await apiService.createHospital(name, contact);
+    }
+    print(mp);
     print('signup');
+    String id;
+    if (widget.choice == ChooseSign.doctor) {
+      id = mp['DoctorID'].toString();
+    }
+    if (widget.choice == ChooseSign.patient) {
+      id = mp['PatientID'].toString();
+    }
+    if (widget.choice == ChooseSign.hospital) {
+      id = mp['HospitalID'].toString();
+    }
     try {
       setState(() {
         isBusy = true;
@@ -105,7 +130,7 @@ class _SignUpState extends State<SignUp> {
         'connection': 'Username-Password-Authentication',
         'given_name': role,
         'family_name': uid.toString(),
-        'nickname': '1',
+        'nickname': id,
         'name': name,
       });
       setState(() {
