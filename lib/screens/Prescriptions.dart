@@ -22,16 +22,32 @@ class _PrescriptionsState extends State<Prescriptions> {
   bool _loading = false;
   List _prescriptions = [
     {
-      'prescription_id': 'lab1',
+      'prescription_id': 'Lab_01_1e',
       'prescription_status': 'pending',
-      'prescription': 'khyal rakho',
-      'prescription_location': 'mumbai'
+      'prescription':
+          '2 gtt q2h OD for 3 days These instructions as used on a prescription for Ciloxan.',
+      'prescription_location': 'Lal PathLabs, Kanpur'
     },
     {
-      'prescription_id': 'lab2',
+      'prescription_id': 'Lab_02_1d',
       'prescription_status': 'pending',
-      'prescription': 'khyal rakho',
-      'prescription_location': 'mumbai'
+      'prescription':
+          '1 tab po BID for 14 days These instructions as used on a prescription for doxycycline.',
+      'prescription_location': 'Durga Pathlogy, Surat'
+    },
+    {
+      'prescription_id': 'Lab_03_1s',
+      'prescription_status': 'pending',
+      'prescription':
+          '1 gt QID OU for 7 days, then BID for 14 days, for itchy eyes SHAKE.',
+      'prescription_location': 'Lal PathLabs, Kanpur'
+    },
+    {
+      'prescription_id': 'Lab_04_1g',
+      'prescription_status': 'pending',
+      'prescription':
+          'Livostin four times per day in each eye for 7 days and then decreased.',
+      'prescription_location': 'Durga Pathlogy, Surat'
     },
   ];
   double width;
@@ -204,6 +220,7 @@ class _PrescriptionsState extends State<Prescriptions> {
             ),
     );
   }
+
   TextEditingController _emailController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey();
@@ -285,6 +302,15 @@ class _PrescriptionsState extends State<Prescriptions> {
                             onTap: () {
                               if (_formKey.currentState.validate()) {
                                 // prescription post
+                                Fluttertoast.showToast(
+                                    msg: "Prescription under Review.",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.CENTER,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: Colors.red,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0);
+                                Navigator.pop(context);
                               }
                             },
                             child: Container(

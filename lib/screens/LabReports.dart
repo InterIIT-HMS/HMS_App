@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hospital_management_system/constants/colors.dart';
 import 'package:hospital_management_system/screens/choiceSign.dart';
 import 'package:hospital_management_system/widgets/MyTextField.dart';
@@ -22,20 +23,32 @@ class _LabReportsState extends State<LabReports> {
   bool _loading = false;
   List _completedLabTests = [
     {
-      'test_id': 'lab1',
+      'test_id': 'lab1_id_02',
       'test_status': 'pending',
-      'details': 'sad',
+      'details': 'Prescriptions may be entered into an electronic medical',
       'date': '12/12/12',
-      'file_location':
-          'https://channeli.in/media/noticeboard/office_stac_2f831bc13565c3058e5764fc501ece7c.pdf'
+      'file_location': 'http://www.gputtawar.edu.in/downloads/Prescriptions.pdf'
     },
     {
-      'test_id': 'lab2',
+      'test_id': 'lab2_id_02',
       'test_status': 'pending',
-      'details': 'sad',
+      'details': 'Drug equivalence and non-substitution',
       'date': '12/12/12',
-      'file_location':
-          'https://channeli.in/media/noticeboard/office_stac_2f831bc13565c3058e5764fc501ece7c.pdf'
+      'file_location': 'http://www.gputtawar.edu.in/downloads/Prescriptions.pdf'
+    },
+    {
+      'test_id': 'lab3_id_02',
+      'test_status': 'pending',
+      'details': 'Label and instructions',
+      'date': '12/12/12',
+      'file_location': 'http://www.gputtawar.edu.in/downloads/Prescriptions.pdf'
+    },
+    {
+      'test_id': 'lab4_id_02',
+      'test_status': 'pending',
+      'details': 'Prescriptions for children',
+      'date': '12/12/12',
+      'file_location': 'http://www.gputtawar.edu.in/downloads/Prescriptions.pdf'
     }
   ];
   double width;
@@ -301,6 +314,15 @@ class _LabReportsState extends State<LabReports> {
                             onTap: () {
                               if (_formKey.currentState.validate()) {
                                 // prescription post
+                                Fluttertoast.showToast(
+                                    msg: "Lab Report under Review.",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.CENTER,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: Colors.red,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0);
+                                Navigator.pop(context);
                               }
                             },
                             child: Container(

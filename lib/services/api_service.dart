@@ -12,6 +12,8 @@ class APIService {
   APIService._internal();
   static final APIService _api = APIService._internal();
   String _baseUrl = 'http://10.61.71.54:8080';
+  String _baseUrlAppointment = 'http://10.61.71.54:8081';
+  String _baseUrlReports = 'http://10.61.71.54:8082';
 
   Future<Map<String, dynamic>> createUser(String name, String contact) async {
     print('Start');
@@ -90,21 +92,71 @@ class APIService {
     }
   }
 
-  // Future<Map<String, dynamic>> getAppointments(String token, String id) async {
-  //   print('Start');
-  //   Response response = await http.get('${_baseUrl}/appointments/}', headers: {
-  //     'Content-Type': 'application/json',
-  //     'Accept': 'application/json',
-  //     'Authorization': 'Bearer $token',
-  //   });
-  //   print('Stop');
-  //   print(response);
-  //   if (response.statusCode == 200) {
-  //     Map<String, dynamic> mp =
-  //         (jsonDecode(response.body) as Map<String, dynamic>);
-  //     return mp;
-  //   } else {
-  //     return null;
-  //   }
-  // }
+  Future<List<dynamic>> getAppointments(String token) async {
+    print('Start');
+    Response response =
+        await http.get('${_baseUrlAppointment}/secure/appointment', headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    print('Stop');
+    print(response);
+    if (response.statusCode == 200) {
+      List<dynamic> mp = (jsonDecode(response.body) as List<dynamic>);
+      return mp;
+    } else {
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>> createAppointment(
+      String time, String agenda, int docId, String token) async {
+        print(token);
+        print(time);
+    print('Start');
+    Response response = await http.post(
+      Uri.parse('${_baseUrlAppointment}/secure/appointment'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'doctor_id': docId,
+        'agenda': agenda,
+        'date_time': time,
+      }),
+    );
+    print('Stop');
+    print(response);
+    if (response.statusCode == 200) {
+      Map<String, dynamic> mp =
+          (jsonDecode(response.body) as Map<String, dynamic>);
+      return mp;
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getDoctors(String token) async {
+    print('Start');
+    Response response = await http.get('${_baseUrl}/secure/doctors', headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    print('Stop');
+    print(response);
+    if (response.statusCode == 200) {
+      // List<dynamic> mp = (jsonDecode(response.body) as List<dynamic>);
+      // DateTime().now().toUtc().toIso8601String();
+      List<Map<String, dynamic>> lmp = (jsonDecode(response.body) as List)
+          .map((e) => e as Map<String, dynamic>)
+          ?.toList();
+      return lmp;
+    } else {
+      return null;
+    }
+  }
 }

@@ -2,17 +2,19 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hospital_management_system/constants/colors.dart';
 import 'package:hospital_management_system/screens/choiceSign.dart';
+import 'package:hospital_management_system/services/api_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:hospital_management_system/services/NetworkHelper.dart';
 import 'package:hospital_management_system/widgets/MyTextField.dart';
+import 'package:intl/intl.dart';
 
 class Appointments extends StatefulWidget {
   final String userId;
   final dynamic userInfo;
-  Appointments({this.userId, this.userInfo});
+  final String userToken;
+  Appointments({this.userId, this.userInfo, this.userToken});
 
   @override
   _AppointmentsState createState() => _AppointmentsState();
@@ -20,24 +22,7 @@ class Appointments extends StatefulWidget {
 
 class _AppointmentsState extends State<Appointments> {
   bool _loading = false;
-  List _appointments = [
-    {
-      'full_name': 'sammer',
-      'appointment_status': 'pending',
-      'description': 'done',
-      'date': '2020-01-01',
-      'time': '10:00',
-      'appointment_id': 'id1'
-    },
-    {
-      'full_name': 'DEMOsammer',
-      'appointment_status': 'pending',
-      'description': 'done',
-      'date': '2020-01-01',
-      'time': '10:00',
-      'appointment_id': 'id1'
-    }
-  ];
+  List _appointments = [];
   List _doctors = [
     {"full_name": 'kosaka'},
     {"full_name": 'samoka'}
@@ -52,12 +37,24 @@ class _AppointmentsState extends State<Appointments> {
 
   TextEditingController _descriptionController = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey();
-
+  APIService apiService = APIService();
   @override
   void initState() {
-    // _getAppointments();
-    // _getDoctors();
     super.initState();
+    apiService.getAppointments(widget.userToken).then((value) {
+      setState(() {
+        _appointments = value;
+        print(value);
+      });
+    });
+    if (widget.userInfo['given_name'] == ChooseSign.patient) {
+      apiService.getDoctors(widget.userToken).then((value) {
+        setState(() {
+          _doctors = value;
+          print(value);
+        });
+      });
+    }
   }
 
   @override
@@ -168,42 +165,6 @@ class _AppointmentsState extends State<Appointments> {
                                   ),
                                   child: Column(
                                     children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            _appointments[index]['full_name'],
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18,
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 2, horizontal: 5),
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: _appointments[index][
-                                                            'appointment_status'] ==
-                                                        'PENDING'
-                                                    ? Colors.orange
-                                                    : _appointments[index][
-                                                                'appointment_status'] ==
-                                                            'ACCEPTED'
-                                                        ? Colors.green
-                                                        : Colors.blue[700]),
-                                            child: Text(
-                                              _appointments[index]
-                                                  ['appointment_status'],
-                                              style: TextStyle(
-                                                  color: colorWhite,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                          )
-                                        ],
-                                      ),
                                       SizedBox(height: 5),
                                       Row(
                                         children: [
@@ -211,8 +172,7 @@ class _AppointmentsState extends State<Appointments> {
                                             width: width - 80,
                                             height: 50,
                                             child: Text(
-                                              _appointments[index]
-                                                  ['description'],
+                                              _appointments[index]['agenda'],
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 2,
                                             ),
@@ -226,79 +186,11 @@ class _AppointmentsState extends State<Appointments> {
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold),
                                           ),
-                                          (_appointments[index]['date'] ==
-                                                      null ||
-                                                  _appointments[index]
-                                                          ['time'] ==
-                                                      null)
-                                              ? Text(
-                                                  'N/A',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                )
-                                              : Text(
-                                                  '${_appointments[index]['date']}  ${_appointments[index]['time']}',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          if (widget.userInfo['given_name'] ==
-                                                  ChooseSign.doctor &&
-                                              _appointments[index]
-                                                      ['appointment_status'] ==
-                                                  'pending')
-                                            Expanded(
-                                              child: DropdownButton<String>(
-                                                isDense: true,
-                                                isExpanded: true,
-                                                icon: Icon(
-                                                  Icons.more_horiz,
-                                                ),
-                                                underline: Container(
-                                                  height: 0,
-                                                  color:
-                                                      Colors.deepPurpleAccent,
-                                                ),
-                                                onChanged: (String newValue) {
-                                                  setState(() {
-                                                    dropdownValue = newValue;
-                                                  });
-                                                },
-                                                items: <String>[
-                                                  'View',
-                                                  'Approve',
-                                                ].map<DropdownMenuItem<String>>(
-                                                    (String value) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: value,
-                                                    child: Text(value),
-                                                    onTap: () {
-                                                      print(value);
-                                                      print(
-                                                          _appointments[index]);
-
-                                                      if (value == 'View') {
-                                                        _viewAppointmentDialog(
-                                                            context,
-                                                            _appointments[
-                                                                index]);
-                                                      } else if (value ==
-                                                          'Approve') {
-                                                        _approveTime_2(context);
-                                                      }
-                                                    },
-                                                  );
-                                                }).toList(),
-                                              ),
-                                            ),
+                                          Text(
+                                            '${DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.parse(_appointments[index]['date_time']))}',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w500),
+                                          ),
                                         ],
                                       ),
                                     ],
@@ -309,7 +201,10 @@ class _AppointmentsState extends State<Appointments> {
                       ),
                     )
                   : Center(
-                      child: Text('No appointment data found!'),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                      ),
                     ),
             ),
     );
@@ -324,7 +219,16 @@ class _AppointmentsState extends State<Appointments> {
     if (timeOfDay != null && timeOfDay != selectedTime) {
       setState(() {
         selectedTime = timeOfDay;
-        Navigator.pop(context);
+        String str = DateTime(now.year, now.month, now.day, selectedTime.hour,
+                selectedTime.minute)
+            .toUtc()
+            .toIso8601String();
+        apiService.createAppointment(
+          str,
+          _descriptionController.text,
+          _selectedDocotor["DoctorID"],
+          widget.userToken,
+        );
       });
     }
   }
@@ -388,6 +292,8 @@ class _AppointmentsState extends State<Appointments> {
         });
   }
 
+  final now = new DateTime.now();
+
 // adding new appointment dialog
   Future<Widget> _addNewAppointmentDialog(context) {
     return showDialog(
@@ -443,7 +349,7 @@ class _AppointmentsState extends State<Appointments> {
                               value: _selectedDocotor,
                               items: _doctors
                                   .map((value) => DropdownMenuItem(
-                                        child: Text(value["full_name"]),
+                                        child: Text(value["Name"]),
                                         value: value,
                                       ))
                                   .toList(),
@@ -499,35 +405,49 @@ class _AppointmentsState extends State<Appointments> {
                             ),
                           ),
                           MyTextField(
-                            hint: 'Description',
+                            hint: 'Agenda',
                             icon: MaterialCommunityIcons.note_text,
                             isMultiline: true,
                             maxLines: 5,
                             controller: _descriptionController,
                             validation: (val) {
                               if (val.isEmpty) {
-                                return 'A description is required';
+                                return 'A agenda is required';
                               }
                               return null;
                             },
                           ),
                           GestureDetector(
                             onTap: () {
-                              if (_formKey.currentState.validate()) {
-                                _appointments.add(_appointments[0]);
-                              }
+                              _selectTime(context);
                             },
-                            child: Container(
-                              alignment: Alignment.center,
-                              height: 30.0,
-                              width: double.infinity,
-                              child: Text(
-                                'SAVE',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w500),
-                              ),
+                            child: Text(
+                              DateFormat('hh:mm a').format(DateTime(
+                                  now.year,
+                                  now.month,
+                                  now.day,
+                                  selectedTime.hour,
+                                  selectedTime.minute)),
+                              style: TextStyle(fontSize: 25),
                             ),
                           ),
+                          // GestureDetector(
+                          //   onTap: () {
+                          //     if (_formKey.currentState.validate()) {
+                          //       _appointments.add(_appointments[0]);
+                          //     }
+                          //   },
+                          //   child: Container(
+                          //     alignment: Alignment.center,
+                          //     height: 30.0,
+                          //     width: double.infinity,
+                          //     child: Text(
+                          //       'SAVE',
+                          //       style: TextStyle(
+                          //           fontSize: 18, fontWeight: FontWeight.w500),
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
