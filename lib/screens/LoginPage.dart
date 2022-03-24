@@ -173,7 +173,7 @@ class _LoginPageState extends State<LoginPage> {
                                   child: MyButton(
                                     text: 'Log in',
                                     btnColor: primaryColor,
-                                    btnRadius: 8,
+                                    btnRadius: 32,
                                   ),
                                 )
                               : CircularProgressIndicator(

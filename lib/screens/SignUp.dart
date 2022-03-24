@@ -304,9 +304,9 @@ class _SignUpState extends State<SignUp> {
                                         uid: _uidController.text);
                                   },
                                   child: MyButton(
-                                    text: 'SIGNUP',
+                                    text: 'Sign Up',
                                     btnColor: primaryColor,
-                                    btnRadius: 8,
+                                    btnRadius: 32,
                                   ),
                                 )
                               : CircularProgressIndicator(

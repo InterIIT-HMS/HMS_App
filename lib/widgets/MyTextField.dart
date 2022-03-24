@@ -38,7 +38,7 @@ class _MyTextFieldState extends State<MyTextField> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
       child: TextFormField(
         cursorColor: primaryColor,
         maxLines: widget.maxLines,
@@ -77,23 +77,24 @@ class _MyTextFieldState extends State<MyTextField> {
                   color: primaryColor,
                 )
               : null,
-          contentPadding: EdgeInsets.fromLTRB(16, 10, 16, 10),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
           hintText: widget.hint,
           hintStyle: TextStyle(color: hintColor),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(32),
             borderSide: BorderSide(color: primaryColor, width: 1.0),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(32),
             borderSide: BorderSide(color: primaryColor, width: 1.0),
           ),
           errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(32),
             borderSide: BorderSide(color: errorColor, width: 1),
           ),
           focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(32),
             borderSide: BorderSide(color: errorColor, width: 1),
           ),
         ),

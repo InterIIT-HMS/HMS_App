@@ -91,7 +91,7 @@ class _DashboardState extends State<Dashboard> {
           icon: Icon(FlutterIcons.exit_run_mco),
         ),
         body: _loadScreen(_selectedPage),
-        backgroundColor: backgroundColor,
+        // backgroundColor: backgroundColor,
       ),
     );
   }

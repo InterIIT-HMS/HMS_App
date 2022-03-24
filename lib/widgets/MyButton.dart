@@ -5,7 +5,8 @@ class MyButton extends StatefulWidget {
   final Color btnColor;
   final double btnRadius;
 
-  MyButton({@required this.text, @required this.btnColor, @required this.btnRadius});
+  MyButton(
+      {@required this.text, @required this.btnColor, @required this.btnRadius});
 
   @override
   _MyButtonState createState() => _MyButtonState();
@@ -16,7 +17,7 @@ class _MyButtonState extends State<MyButton> {
   Widget build(BuildContext context) {
     return Container(
       // width: widget.width * 0.85,
-      height: 45,
+      height: 60,
       child: Text(
         widget.text,
         style: TextStyle(

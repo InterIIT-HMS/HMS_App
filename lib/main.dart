@@ -15,12 +15,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.pink,
         primaryColor: Colors.deepPurple,
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        fontFamily: 'Poppins'
+        // fontFamily: 'Poppins'
       ),
       home: LoginPage(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
-
-
