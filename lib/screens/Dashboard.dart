@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:auth0/auth0.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:hospital_management_system/constants/colors.dart';
+import 'package:hospital_management_system/screens/LoginPage.dart';
 import 'package:hospital_management_system/widgets/DashboardTiles.dart';
 import 'package:http/http.dart' as http;
 
@@ -73,6 +75,21 @@ class _DashboardState extends State<Dashboard> {
     height = MediaQuery.of(context).size.height;
     return SafeArea(
       child: Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: FloatingActionButton.extended(
+          label: Text('Log Out'),
+          onPressed: () {
+            client.logout();
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => LoginPage(),
+              ),
+              (Route<dynamic> route) => false,
+            );
+          },
+          icon: Icon(FlutterIcons.exit_run_mco),
+        ),
         body: _loadScreen(_selectedPage),
         backgroundColor: backgroundColor,
       ),

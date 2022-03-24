@@ -131,14 +131,14 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           SizedBox(height: 20),
 
-                          // username
+                          // Email ID
                           MyTextField(
                             controller: _usernameController,
-                            hint: "Username",
+                            hint: "Email ID",
                             icon: Icons.person,
                             validation: (val) {
                               if (val.isEmpty) {
-                                return "Username is required";
+                                return "Email ID is required";
                               }
                               return null;
                             },
